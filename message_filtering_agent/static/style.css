@@ -1,0 +1,119 @@
+:root {
+  color-scheme: light;
+  --ink: #172d2b;
+  --muted: #647571;
+  --line: #d9e2dc;
+  --paper: #f4f6f1;
+  --surface: #ffffff;
+  --green: #146b55;
+  --green-dark: #104b3f;
+  --lime: #d3e77c;
+  --coral: #d77954;
+  --soft-green: #eaf2ed;
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: "Segoe UI", "Yu Gothic UI", sans-serif;
+  line-height: 1.5;
+}
+.topbar {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 max(24px, calc((100% - 1120px) / 2));
+  background: var(--green-dark);
+  color: white;
+}
+.brand { display: inline-flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; font-weight: 650; }
+.brand-mark { display: grid; place-items: center; width: 27px; aspect-ratio: 1; background: var(--lime); color: var(--green-dark); font: 700 17px Georgia, serif; border-radius: 5px; }
+.topbar-actions { display: flex; align-items: center; gap: 14px; }
+.local-state { display: flex; align-items: center; gap: 8px; color: #d0e4d9; font-size: 13px; }
+.state-dot { width: 8px; aspect-ratio: 1; background: var(--lime); border-radius: 50%; }
+main { max-width: 1120px; margin: 0 auto; padding: 48px 24px 64px; }
+.intro { max-width: 580px; margin-bottom: 36px; animation: arrive .45s ease-out both; }
+.eyebrow { margin: 0 0 8px; color: var(--green); font-size: 11px; font-weight: 750; letter-spacing: .08em; }
+h1 { margin: 0; font: 600 48px/1.08 Georgia, "Songti SC", serif; }
+h1 em { color: var(--green); font-weight: 500; }
+.intro-copy { max-width: 510px; margin: 18px 0 0; color: var(--muted); }
+.workspace { border: 1px solid var(--line); background: var(--surface); border-radius: var(--radius); box-shadow: 0 12px 32px rgb(28 54 45 / 6%); animation: arrive .5s .08s ease-out both; }
+.tabs { display: flex; gap: 4px; padding: 0 24px; border-bottom: 1px solid var(--line); }
+.tab { min-height: 54px; padding: 0 14px; color: var(--muted); background: none; border: 0; border-bottom: 2px solid transparent; font: inherit; cursor: pointer; }
+.tab.active { color: var(--green-dark); border-bottom-color: var(--green); font-weight: 650; }
+.count { display: inline-grid; place-items: center; min-width: 20px; height: 20px; margin-left: 5px; padding: 0 5px; color: var(--green-dark); background: var(--soft-green); border-radius: 10px; font-size: 11px; }
+.panel { display: none; padding: 28px 30px 30px; }
+.panel.active { display: block; }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 20px; }
+.span-two { grid-column: 1 / -1; }
+.field { display: flex; min-width: 0; flex-direction: column; gap: 7px; color: #334b46; font-size: 13px; font-weight: 600; }
+.field-hint { color: var(--muted); font-size: 12px; font-weight: 400; }
+input[readonly] { color: var(--muted); background: var(--paper); }
+.toggle-line { display: flex; align-items: center; gap: 9px; min-height: 41px; color: var(--ink); font-weight: 400; }
+.toggle-line input { width: 17px; height: 17px; margin: 0; accent-color: var(--green); }
+input, textarea, select { width: 100%; min-width: 0; padding: 10px 11px; color: var(--ink); background: #fff; border: 1px solid #cbd7d0; border-radius: 4px; font: 400 14px/1.45 "Segoe UI", "Yu Gothic UI", sans-serif; }
+input:focus, textarea:focus, select:focus { border-color: var(--green); outline: 2px solid rgb(20 107 85 / 15%); }
+textarea { resize: vertical; }
+.section-label { padding-top: 12px; border-top: 1px solid var(--line); color: var(--green-dark); font: 600 18px Georgia, "Songti SC", serif; }
+.form-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }
+.button { min-height: 40px; padding: 0 16px; border: 1px solid transparent; border-radius: 4px; font: 650 13px "Segoe UI", "Yu Gothic UI", sans-serif; cursor: pointer; }
+.button.primary { color: white; background: var(--green); }
+.button.primary:hover { background: var(--green-dark); }
+.button:disabled { cursor: not-allowed; opacity: .55; }
+.button.quiet { color: var(--green-dark); background: white; border-color: var(--line); }
+.button.danger { color: #8d352b; background: white; border-color: #e6c6c0; }
+.active-config { margin: 0 0 18px; color: var(--muted); font-size: 12px; }
+.memory-management .panel-heading { margin-bottom: 16px; }
+.memory-list { display: grid; gap: 10px; margin-top: 18px; }
+.memory-entry { display: grid; gap: 10px; padding: 14px; border: 1px solid var(--line); border-radius: 4px; }
+.memory-meta { color: var(--muted); font-size: 12px; }
+.memory-controls { display: grid; grid-template-columns: minmax(110px, .6fr) minmax(140px, 1fr) auto auto auto; gap: 8px; align-items: center; }
+.memory-toggle { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; }
+.memory-toggle input { width: 16px; height: 16px; accent-color: var(--green); }
+.status-text { color: var(--muted); font-size: 13px; }
+.footnote { margin: 22px 0 0; padding-top: 14px; color: var(--muted); border-top: 1px solid var(--line); font-size: 12px; }
+.panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+h2 { margin: 0; font: 600 25px Georgia, "Songti SC", serif; }
+.question-list { display: grid; gap: 12px; }
+.question { padding: 18px; border: 1px solid var(--line); border-left: 3px solid var(--coral); border-radius: 4px; }
+.question-progress { display: block; min-height: 20px; }
+.filtered-list { display: grid; gap: 12px; }
+.filtered-entry { display: grid; gap: 8px; padding: 18px; border: 1px solid var(--line); border-left: 3px solid var(--muted); border-radius: 4px; }
+.filtered-content { margin: 0; padding: 12px; background: var(--paper); border-radius: 4px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.question-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--muted); font-size: 12px; }
+.question-content { margin: 12px 0; padding: 12px; background: var(--paper); border-radius: 4px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.question label { display: block; margin-bottom: 7px; font-size: 13px; font-weight: 600; }
+.empty { padding: 36px 12px; color: var(--muted); text-align: center; }
+.manual-transcript-list, .manual-results { display: grid; gap: 12px; }
+.manual-transcript-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+.manual-transcript-row .button { margin-bottom: 1px; }
+.manual-results { margin-top: 18px; }
+.manual-result { display: grid; gap: 8px; min-width: 0; padding: 16px; background: var(--soft-green); border-left: 3px solid var(--green); border-radius: 4px; }
+.manual-result-heading { margin: 0; font: 650 15px "Segoe UI", "Yu Gothic UI", sans-serif; overflow-wrap: anywhere; }
+.manual-result-content { max-height: 280px; margin: 0; padding: 10px; overflow: auto; background: white; border-radius: 3px; white-space: pre-wrap; overflow-wrap: anywhere; font: 400 13px/1.5 "Segoe UI", "Yu Gothic UI", sans-serif; }
+.manual-result-detail, .manual-result-error { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.manual-result-error { color: #8d352b; }
+footer { display: flex; justify-content: space-between; max-width: 1120px; margin: 0 auto; padding: 18px 24px 30px; color: var(--muted); font-size: 12px; }
+@keyframes arrive { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 640px) {
+  .topbar { height: 56px; padding: 0 16px; }
+  .topbar-actions { gap: 0; }
+  .local-state { display: none; }
+  main { padding: 34px 14px 42px; }
+  h1 { font-size: 40px; }
+  .intro { margin-bottom: 24px; }
+  .tabs { overflow-x: auto; padding: 0 10px; }
+  .tab { flex: 0 0 auto; padding: 0 11px; font-size: 13px; }
+  .panel { padding: 22px 16px; }
+  .form-grid { grid-template-columns: minmax(0, 1fr); }
+  .span-two { grid-column: auto; }
+  .manual-transcript-row { grid-template-columns: minmax(0, 1fr); }
+  .manual-transcript-row .button { justify-self: end; }
+  .memory-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  footer { padding-right: 14px; padding-left: 14px; }
+}

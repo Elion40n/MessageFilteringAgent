@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "message-filtering-agent"
+version = "0.1.0"
+description = "A local, configurable message filtering agent"
+requires-python = ">=3.11"
+dependencies = [
+    "keyring>=25,<27",
+    "langchain-openai>=0.3,<2",
+    "langgraph>=0.4,<2",
+]
+
+[project.optional-dependencies]
+packaging = ["pyinstaller>=6.11,<7"]
+
+[project.scripts]
+message-filtering-agent = "message_filtering_agent.app:main"
+message-filtering-launcher = "message_filtering_agent.launcher:main"
+
+[tool.setuptools.packages.find]
+include = ["message_filtering_agent*"]
+
+[tool.setuptools.package-data]
+message_filtering_agent = ["static/*"]

@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>消息筛选台</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <script src="/assets/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="消息筛选台主页">
+      <span class="brand-mark">M</span>
+      <span>消息筛选台</span>
+    </a>
+    <div class="topbar-actions">
+      <button class="button danger" id="shutdown-agent" type="button">关闭 Agent</button>
+      <div class="local-state" aria-live="polite"><span class="state-dot"></span><span id="agent-status">仅本机运行</span></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <p class="eyebrow">MESSAGE FILTERING AGENT</p>
+      <h1>把重要消息<br><em>筛出来。</em></h1>
+      <p class="intro-copy">粘贴聊天记录，拆分其中的独立信息并逐条进入正式筛选流程。</p>
+    </section>
+
+    <section class="workspace" aria-label="筛选工作台">
+      <nav class="tabs" aria-label="工作台页面">
+        <button class="tab active" data-tab="settings">规则与连接</button>
+        <button class="tab" data-tab="memory">记忆</button>
+        <button class="tab" data-tab="review">待确认 <span id="question-count" class="count">0</span></button>
+        <button class="tab" data-tab="filtered">过滤信息 <span id="filtered-count" class="count">0</span></button>
+        <button class="tab" data-tab="manual">手动输入</button>
+        <button class="tab" data-tab="test-output">处理结果</button>
+      </nav>
+
+      <section class="panel active" id="panel-settings">
+        <p class="active-config">正在使用配置文件：<strong id="config-file">settings.json</strong></p>
+        <form id="settings-form" class="form-grid">
+          <label class="field span-two">
+            <span>信息类型</span>
+            <input name="message_type" required maxlength="120">
+          </label>
+          <label class="field">
+            <span>筛选配置名称</span>
+            <input name="profile_id" required maxlength="120">
+            <small class="field-hint">首次保存时绑定并据此命名 JSON 文件；之后不可修改。保持 default 即使用默认名称。</small>
+          </label>
+          <label class="field">
+            <span>本地界面端口（下次启动生效）</span>
+            <input name="port" type="number" min="1024" max="65535" required>
+          </label>
+          <label class="field span-two">
+            <span>筛选条件</span>
+            <textarea name="criteria" rows="4" placeholder="描述必须满足的条件、明确排除项和需要核实的信息"></textarea>
+          </label>
+          <label class="field">
+            <span>LLM 模型</span>
+            <input name="llm_model" required>
+          </label>
+          <label class="field">
+            <span>符合时的输出方式</span>
+            <select name="output_channel">
+              <option value="qq_mail">QQ 邮箱</option>
+              <option value="qq_message">QQ 消息（尚未接入）</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>兼容接口地址</span>
+            <input name="llm_base_url" placeholder="留空使用默认服务">
+          </label>
+          <label class="field">
+            <span>微信数据来源</span>
+            <select name="wechat_input_mode">
+              <option value="manual">不启用微信自动导入</option>
+              <option value="siwx" disabled>SIWX（未来预留，暂未启用）</option>
+            </select>
+          </label>
+          <p class="footnote span-two">当前版本暂不采用微信自动输入；SIWX 相关代码仅作为未来接入方式的占位保留。</p>
+          <label class="field">
+            <span>消息去重保留期（天）</span>
+            <input name="dedup_retention_days" type="number" min="1" max="3650" required>
+          </label>
+          <label class="field">
+            <span>过滤信息保留期（天）</span>
+            <input name="filtered_retention_days" type="number" min="1" max="3650" required>
+          </label>
+          <label class="field span-two" data-siwx-only hidden>
+            <span>SIWX 导出目录</span>
+            <input name="siwx_export_dir" placeholder="SIWX exports 文件夹">
+          </label>
+          <label class="field span-two" data-siwx-only hidden>
+            <span class="toggle-line"><input name="siwx_auto_export_enabled" type="checkbox"> 自动定期导出并导入</span>
+          </label>
+          <label class="field" data-siwx-only hidden>
+            <span>SIWX 本机服务地址</span>
+            <input name="siwx_api_url" placeholder="http://127.0.0.1:8787">
+          </label>
+          <label class="field" data-siwx-only hidden>
+            <span>SIWX 账号 wxid</span>
+            <input name="siwx_account" placeholder="wxid_...">
+          </label>
+          <label class="field span-two" data-siwx-only hidden>
+            <span>会话 username（每行一个）</span>
+            <textarea name="siwx_chats" rows="3" placeholder="私聊 wxid 或群聊 ID，每行一个"></textarea>
+          </label>
+          <label class="field" data-siwx-only hidden>
+            <span>首次导出起始日期（可选）</span>
+            <input name="siwx_auto_export_start_date" type="date">
+          </label>
+          <label class="field" data-siwx-only hidden>
+            <span>自动导出间隔（天）</span>
+            <input name="siwx_auto_export_interval_days" type="number" min="1" max="30" required>
+          </label>
+          <label class="field" data-siwx-only hidden>
+            <span class="toggle-line"><input name="siwx_auto_cleanup_enabled" type="checkbox"> 自动清理 Agent 自动导出的旧文件</span>
+          </label>
+          <label class="field" data-siwx-only hidden>
+            <span>自动导出文件保留期（天）</span>
+            <input name="siwx_auto_cleanup_retention_days" type="number" min="1" max="3650" required>
+          </label>
+          <p class="footnote span-two" data-siwx-only hidden>自动导出需要 SIWX Web 服务保持运行；手动导出也可使用此 exports 目录。清理只作用于 Agent 自动生成并登记的 JSON。</p>
+          <div class="section-label span-two">QQ 邮箱</div>
+          <label class="field">
+            <span>邮箱账号</span>
+            <input name="mail_username" autocomplete="off">
+          </label>
+          <label class="field">
+            <span>通知收件地址</span>
+            <input name="notification_recipient" autocomplete="off">
+          </label>
+          <label class="field">
+            <span>IMAP 服务器</span>
+            <input name="mail_imap_host">
+          </label>
+          <label class="field">
+            <span>IMAP TLS 端口</span>
+            <input name="mail_imap_port" type="number" min="1" max="65535">
+          </label>
+          <label class="field">
+            <span>邮箱文件夹</span>
+            <input name="mail_folder">
+          </label>
+          <label class="field">
+            <span>SMTP 服务器</span>
+            <input name="mail_smtp_host">
+          </label>
+          <label class="field">
+            <span>SMTP 端口</span>
+            <input name="mail_smtp_port" type="number" min="1" max="65535">
+          </label>
+          <label class="field">
+            <span>轮询间隔（秒）</span>
+            <input name="poll_interval_seconds" type="number" min="10" max="3600">
+          </label>
+          <label class="field">
+            <span>IMAP 收件</span>
+            <span class="toggle-line"><input name="mail_ingestion_enabled" type="checkbox"> 启用 QQ 邮箱增量收件</span>
+          </label>
+          <div class="section-label span-two">安全凭据</div>
+          <label class="field">
+            <span>模型 API 密钥</span>
+            <input id="llm-secret" type="password" autocomplete="new-password" placeholder="输入后保存到系统凭据库">
+            <small class="field-hint">按兼容接口地址隔离；同一地址的 profile 共用此密钥，修改会影响它们。</small>
+          </label>
+          <label class="field">
+            <span>QQ 邮箱授权码</span>
+            <input id="mail-secret" type="password" autocomplete="new-password" placeholder="输入后保存到系统凭据库">
+            <small class="field-hint">按 QQ 邮箱账号共享；同一邮箱的 profile 共用授权码。</small>
+          </label>
+          <div class="form-actions span-two">
+            <button class="button primary" type="submit">保存设置</button>
+            <span id="settings-status" class="status-text" role="status"></span>
+          </div>
+        </form>
+        <p class="footnote">密钥不会写入设置文件。SIWX 微信输入当前仅作为未来接入占位，设置页不可启用。</p>
+      </section>
+
+      <section class="panel" id="panel-memory">
+        <section class="memory-management" aria-labelledby="memory-heading">
+          <div class="panel-heading">
+            <div><p class="eyebrow">PROFILE MEMORY</p><h2 id="memory-heading">当前配置的记忆</h2></div>
+          </div>
+          <form id="memory-form" class="form-grid">
+            <label class="field span-two">
+              <span>记忆内容</span>
+              <textarea name="content" rows="3" required maxlength="4000" placeholder="记录经人工确认、可用于后续筛选的经验"></textarea>
+            </label>
+            <label class="field">
+              <span>判断倾向</span>
+              <select name="decision"><option value="补充">补充</option><option value="满足">满足</option><option value="不满足">不满足</option></select>
+            </label>
+            <label class="field">
+              <span>标签（逗号分隔）</span>
+              <input name="tags" placeholder="地点, 薪资">
+            </label>
+            <div class="form-actions span-two">
+              <button class="button primary" type="submit">新增记忆</button>
+              <span id="memory-status" class="status-text" role="status"></span>
+            </div>
+          </form>
+          <div id="memories" class="memory-list"></div>
+        </section>
+      </section>
+
+      <section class="panel" id="panel-review">
+        <div class="panel-heading">
+          <div><p class="eyebrow">HUMAN REVIEW</p><h2>需要你补充的信息</h2></div>
+          <button id="refresh-questions" class="button quiet" type="button">刷新</button>
+        </div>
+        <div id="questions" class="question-list"></div>
+      </section>
+
+      <section class="panel" id="panel-filtered">
+        <div class="panel-heading">
+          <div><p class="eyebrow">FILTERED MESSAGES</p><h2>当前 Agent 过滤的信息</h2></div>
+          <button id="refresh-filtered" class="button quiet" type="button">刷新</button>
+        </div>
+        <div id="filtered-messages" class="filtered-list"></div>
+        <p id="filtered-status" class="status-text" role="status"></p>
+      </section>
+
+      <section class="panel" id="panel-manual">
+        <div class="panel-heading">
+          <div><p class="eyebrow">MANUAL INPUT</p><h2>聊天记录输入</h2></div>
+        </div>
+        <form id="manual-form">
+          <div id="manual-transcripts" class="manual-transcript-list">
+            <div class="manual-transcript-row">
+              <label class="field"><span data-transcript-label>聊天记录 1</span><textarea data-manual-transcript rows="10" maxlength="200000" placeholder="粘贴一段完整聊天记录；一段记录中可以包含多条目标信息和杂讯。" required></textarea></label>
+              <button class="button quiet" type="button" data-remove-transcript disabled>移除</button>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button id="add-manual-transcript" class="button quiet" type="button">添加一段记录</button>
+            <button class="button primary" type="submit">拆分并处理</button>
+            <span id="manual-status" class="status-text" role="status"></span>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel" id="panel-test-output">
+        <div class="panel-heading">
+          <div><p class="eyebrow">PROCESSING RESULTS</p><h2>拆分后的逐条结果</h2></div>
+        </div>
+        <div id="test-result" class="manual-results"><div class="empty">每条手动消息的正式处理结果会显示在这里。</div></div>
+      </section>
+    </section>
+  </main>
+  <footer><span>MessageFilteringAgent</span><span>本地数据保存在此电脑</span></footer>
+</body>
+</html>

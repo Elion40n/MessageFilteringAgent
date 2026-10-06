@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MessageFilteringAgent 启动器</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="stylesheet" href="/assets/launcher.css">
+  <script src="/assets/launcher.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="MessageFilteringAgent 启动器">
+      <span class="brand-mark">M</span>
+      <span>消息筛选台</span>
+    </a>
+    <div class="local-state"><span class="state-dot"></span>仅本机运行</div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <p class="eyebrow">MESSAGE FILTERING AGENT</p>
+      <h1>选择配置，<br><em>开始筛选。</em></h1>
+      <p class="intro-copy">每个配置启动一个独立 Agent；配置和运行数据保存在本机用户目录。启动器连续 30 分钟无操作会自动关闭，已启动的 Agent 不受影响。</p>
+    </section>
+
+    <section class="workspace launcher-workspace" aria-label="Agent 启动器">
+      <div class="launcher-layout">
+        <section class="launcher-section">
+          <div class="panel-heading">
+            <div><p class="eyebrow">PROFILES</p><h2>现有配置</h2></div>
+            <button id="refresh-profiles" class="button quiet" type="button">刷新</button>
+          </div>
+          <div id="profiles" class="launcher-profiles" aria-live="polite">
+            <div class="empty">正在读取配置…</div>
+          </div>
+          <p id="profiles-status" class="status-text" role="status"></p>
+        </section>
+
+        <section class="launcher-section launcher-create">
+          <div class="panel-heading">
+            <div><p class="eyebrow">NEW PROFILE</p><h2>创建并启动</h2></div>
+          </div>
+          <form id="create-profile-form" class="form-grid">
+            <label class="field">
+              <span>配置名称</span>
+              <input name="profile_id" maxlength="120" placeholder="例如 recruitment" required>
+              <small class="field-hint">保存后名称锁定，并用于 JSON 文件名。</small>
+            </label>
+            <label class="field">
+              <span>信息类型</span>
+              <input name="message_type" maxlength="120" value="招聘信息" required>
+            </label>
+            <label class="field span-two">
+              <span>筛选条件</span>
+              <textarea name="criteria" rows="4" placeholder="描述必须满足的条件、排除项和信息不足时要核实的字段" required></textarea>
+            </label>
+            <label class="field">
+              <span>LLM 模型</span>
+              <input name="llm_model" value="gpt-4o-mini" required>
+            </label>
+            <label class="field">
+              <span>Agent 网页端口</span>
+              <input name="port" type="number" min="1024" max="65535" value="8765" required>
+            </label>
+            <label class="field">
+              <span>兼容接口地址</span>
+              <input name="llm_base_url" placeholder="留空使用默认服务">
+            </label>
+            <p class="field-hint span-two">同一模型 URL 的配置共用 API 密钥；不同 URL 使用独立密钥。留空密钥时，仅当该 URL 已有密钥才可创建。</p>
+            <label class="field">
+              <span>模型 API 密钥</span>
+              <input name="llm_api_key" type="password" autocomplete="new-password" placeholder="输入后保存到系统凭据库">
+            </label>
+            <label class="field">
+              <span>通知收件地址</span>
+              <input name="notification_recipient" type="email" autocomplete="email" required>
+            </label>
+            <label class="field">
+              <span>QQ 邮箱账号</span>
+              <input name="mail_username" type="email" autocomplete="username" required>
+            </label>
+            <label class="field">
+              <span>QQ 邮箱授权码</span>
+              <input name="qq_mail_app_password" type="password" autocomplete="new-password" placeholder="输入后保存到系统凭据库">
+            </label>
+            <p class="field-hint span-two">邮箱授权码按发件账号共享；留空时使用该邮箱已保存的授权码。密钥和授权码不会写入配置文件。</p>
+            <label class="field">
+              <span>IMAP 文件夹</span>
+              <input name="mail_folder" value="INBOX">
+            </label>
+            <label class="field">
+              <span>IMAP 服务器</span>
+              <input name="mail_imap_host" value="imap.qq.com" required>
+            </label>
+            <label class="field">
+              <span>IMAP TLS 端口</span>
+              <input name="mail_imap_port" type="number" min="1" max="65535" value="993" required>
+            </label>
+            <label class="field">
+              <span>SMTP 服务器</span>
+              <input name="mail_smtp_host" value="smtp.qq.com" required>
+            </label>
+            <label class="field">
+              <span>SMTP 端口</span>
+              <input name="mail_smtp_port" type="number" min="1" max="65535" value="465" required>
+            </label>
+            <label class="field">
+              <span>轮询间隔（秒）</span>
+              <input name="poll_interval_seconds" type="number" min="10" max="3600" value="60" required>
+            </label>
+            <label class="field">
+              <span>消息去重保留期（天）</span>
+              <input name="dedup_retention_days" type="number" min="1" max="3650" value="30" required>
+            </label>
+            <label class="field">
+              <span>过滤信息保留期（天）</span>
+              <input name="filtered_retention_days" type="number" min="1" max="3650" value="30" required>
+            </label>
+            <label class="toggle-line span-two">
+              <input name="mail_ingestion_enabled" type="checkbox">
+              启用 QQ 邮箱增量收件
+            </label>
+            <p class="footnote span-two">启用收件前请先配置专用空测试文件夹；首次同步最多读取最近 2,000 封邮件。手动输入中的满足项会按通知地址发送邮件。</p>
+            <div class="form-actions span-two">
+              <button id="create-profile-button" class="button primary" type="submit">创建配置并启动</button>
+              <span id="create-status" class="status-text" role="status"></span>
+            </div>
+          </form>
+        </section>
+      </div>
+    </section>
+  </main>
+  <footer><span>MessageFilteringAgent</span><span>配置与运行数据保存在本机用户目录</span></footer>
+</body>
+</html>
