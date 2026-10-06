@@ -117,7 +117,7 @@ class LauncherServiceTests(unittest.TestCase):
         self.assertEqual(result["config_name"], "research.json")
         self.assertTrue(result["started"])
         self.assertTrue(payload["profile_name_bound"])
-        self.assertEqual(payload["data_dir"], str(self.root))
+        self.assertEqual(Path(payload["data_dir"]).resolve(), self.root.resolve())
         self.assertNotIn("llm_api_key", payload)
         self.assertNotIn("qq_mail_app_password", payload)
         self.assertEqual(
