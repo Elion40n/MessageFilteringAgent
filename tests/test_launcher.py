@@ -131,7 +131,8 @@ class LauncherServiceTests(unittest.TestCase):
         command = self.processes[0][0]
         self.assertIn("--run-agent", command)
         self.assertIn("--config", command)
-        self.assertIn(str(config_path), command)
+        config_argument = command[command.index("--config") + 1]
+        self.assertEqual(Path(config_argument).resolve(), config_path.resolve())
 
     def test_failed_credential_write_rolls_back_only_new_config_and_changes(self) -> None:
         model_account = model_api_key_account("https://model.example.test/v1")
