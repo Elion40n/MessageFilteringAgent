@@ -47,9 +47,11 @@
 
 普通用户无需安装 Python、创建虚拟环境或自行构建启动器。项目仓库会一并提供预构建便携版 ZIP，文件位于 `dist/MessageFilteringAgent-portable.zip`；也可从 GitHub 发布页下载（发布页链接待补充）。下载并解压后运行 `MessageFilteringAgent\MessageFilteringAgent.exe`。启动器用于选择并启动已有 profile，或创建新的 profile；启动后按页面显示的本地地址访问 Agent。设置和 SQLite 数据默认位于 `%LOCALAPPDATA%\MessageFilteringAgent`，不保存在程序目录内。
 
+**安全提示：**此便携版 EXE 未进行 Authenticode 代码签名。2026-10-06 的 VirusTotal 检查中，ZIP 有 4/64 个引擎、EXE 有 7/71 个引擎标记告警，包括 Microsoft `Trojan:Win32/Wacatac.B!ml`；[ZIP 报告](https://www.virustotal.com/gui/file/571bce465c6c8c63fdd2fe1da6ca2a119fb5139677108689e3377728d71015b1)和 [EXE 报告](https://www.virustotal.com/gui/file/df962ec79a0b770fdf367f4c7f346104dd38779d37ecb25ddec6723789777a12)。本机 Windows Defender 未检出威胁；这些结果既不能证明文件恶意，也不能证明是误报。若安全软件拦截，请勿关闭防护或添加排除项；可按下方“开发者：从源码运行或构建”自行构建。自行构建也不保证消除安全软件告警。
+
 ### 开发者：从源码运行或构建
 
-以下步骤仅供开发、调试或自行构建使用；普通用户不需要执行。
+以下步骤仅供开发、调试或自行构建使用；普通用户不需要执行。若便携版被安全软件拦截，可按这些步骤从源码构建，但自建版本仍可能被检测。
 
 ```powershell
 py -3.11 -m venv .venv
